@@ -1,0 +1,13 @@
+{
+	"name": "lambda_monitoring",
+	"version": "1.0.0",
+	"description": "",
+	"main": "handler.js",
+	"scripts": {},
+	"author": "",
+	"dependencies": {
+		"aws-sdk": "2.334.0",
+		"request": "2.88.0",
+		"request-promise-native": "1.0.5"
+	}
+}

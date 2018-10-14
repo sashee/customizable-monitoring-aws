@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  ScheduleExpression:
+    Type: String
+    Default: "rate(1 minute)"
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: handler.index
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code: src/
+      Runtime: nodejs8.10
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: allow-logs
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - 'logs:*'
+            Resource: arn:aws:logs:*:*:*
+      - PolicyName: put-cw-data
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - 'cloudwatch:PutMetricData'
+            Resource: '*'
+  ScheduledRule: 
+    Type: AWS::Events::Rule
+    Properties: 
+      ScheduleExpression: !Ref ScheduleExpression
+      State: "ENABLED"
+      Targets: 
+        - Arn: !GetAtt LambdaFunction.Arn
+          Id: "TargetFunction"
+  InvokeLambdaPermission: 
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: !Ref LambdaFunction
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt ScheduledRule.Arn
