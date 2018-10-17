@@ -23,7 +23,6 @@ Resources:
             - lambda.amazonaws.com
           Action:
           - sts:AssumeRole
-      Path: "/"
       Policies:
       - PolicyName: allow-logs
         PolicyDocument:
@@ -52,7 +51,7 @@ Resources:
   InvokeLambdaPermission: 
     Type: AWS::Lambda::Permission
     Properties: 
-      FunctionName: !Ref LambdaFunction
+      FunctionName: !GetAtt LambdaFunction.Arn
       Action: "lambda:InvokeFunction"
       Principal: "events.amazonaws.com"
       SourceArn: !GetAtt ScheduledRule.Arn
