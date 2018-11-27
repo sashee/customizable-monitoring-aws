@@ -9,7 +9,7 @@
 
 ### Package
 
-* ```mkdir -p .tmp && aws cloudformation package --template-file cloudformation.yml --s3-bucket <bucket> --output-template-file .tmp/output.yml```
+* ```cd src && npm i && cd .. && mkdir -p .tmp && aws cloudformation package --template-file cloudformation.yml --s3-bucket <bucket> --output-template-file .tmp/output.yml```
 
 ### Deploy
 
